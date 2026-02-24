@@ -162,6 +162,7 @@
 <body>
     <div class="container">
         <div class="model-selector">
+            <!-- EASY TO CHANGE ICONS: Just update the src attribute below -->
             <div class="model-item" data-model="gpt-5-nano">
                 <img class="model-icon" src="https://cdn.sologo.ai/2025/0102/20250102113948245.png" alt="ChatGPT">
                 <span class="model-name">ChatGPT</span>
@@ -205,21 +206,27 @@
         let conversationHistory = [];
         let selectedModel = 'gpt-5-nano'; // Default model
         const modelItems = document.querySelectorAll('.model-item');
+
         // Set up model selection
         modelItems.forEach(item => {
             item.addEventListener('click', () => {
                 modelItems.forEach(i => i.classList.remove('selected'));
                 item.classList.add('selected');
                 selectedModel = item.dataset.model;
+                // Clear conversation history and output when model changes
+                conversationHistory = [];
+                outputContainer.innerHTML = '';
             });
         });
         // Preselect default
         document.querySelector(`.model-item[data-model="${selectedModel}"]`).classList.add('selected');
+
         // Auto-resize textarea
         inputField.addEventListener('input', () => {
             inputField.style.height = 'auto';
             inputField.style.height = inputField.scrollHeight + 'px';
         });
+
         // Send message on button click
         sendButton.addEventListener('click', sendMessage);
         // Send message on Enter key
@@ -229,6 +236,7 @@
                 sendMessage();
             }
         });
+
         async function sendMessage() {
             const messageText = inputField.value.trim();
             if (messageText) {
@@ -263,12 +271,15 @@
                 }
             }
         }
+
         function showLoading() {
             loadingCircle.style.display = 'block';
         }
+
         function hideLoading() {
             loadingCircle.style.display = 'none';
         }
+
         function addMessage(text, type) {
             const messageDiv = document.createElement('div');
             messageDiv.classList.add('message', type);
