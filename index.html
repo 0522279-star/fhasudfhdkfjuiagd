@@ -1,15 +1,21 @@
 <html>
 <body>
-    
-    <p>hi</p>
-    
     <script src="https://js.puter.com/v2/"></script>
+    <input type="text" id="userInput" placeholder="Type your message here...">
+    <button onclick="sendMessage()">Send</button>
+    <div id="response"></div>
+
     <script>
-        puter.ai.chat(input("Input"), {
-            model: 'deepseek/deepseek-v3.2'
-        }).then(response => {
-            puter.print(response.message.content);
-        });
+        function sendMessage() {
+            const userInput = document.getElementById('userInput').value;
+            if (!userInput) return;
+
+            puter.ai.chat(userInput, {
+                model: 'deepseek/deepseek-v3.2'
+            }).then(response => {
+                document.getElementById('response').innerHTML = response.message.content;
+            });
+        }
     </script>
 </body>
 </html>
