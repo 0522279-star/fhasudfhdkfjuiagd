@@ -11,7 +11,7 @@
             if (!userInput) return;
 
             puter.ai.chat(userInput, {
-                model: 'gemini-3-flash-preview'
+                model: 'x-ai/grok-4-1-fast'
             }).then(response => {
                 document.getElementById('response').innerHTML = response.message.content;
             });
