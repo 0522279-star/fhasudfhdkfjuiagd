@@ -63,7 +63,7 @@
             max-width: 80%;
         }
         .ai-message h1, .ai-message h2, .ai-message h3, .ai-message h4, .ai-message h5, .ai-message h6 {
-            color: #007aff;
+            color: #e0e0e0;
             margin-top: 10px;
             margin-bottom: 5px;
         }
@@ -250,10 +250,10 @@
                 <span class="model-name">Mistral</span>
                 <span class="model-subtitle">Large 3</span>
             </div>
-            <div class="model-item" data-model="google/gemini-3-pro-image-preview">
-                <img class="model-icon" src="https://res.cloudinary.com/apideck/image/upload/v1629253240/icons/openai-codex.png">
-                <span class="model-name">Nanobanana</span>
-                <span class="model-subtitle">pro 3</span>
+            <div class="model-item" data-model="openai/gpt-5.3-codex">
+                <img class="model-icon" src="https://img.utdstc.com/icon/b9e/a41/b9ea419dbb6ea4bfc9a9327992db197f95fa59f720a98b7ce072c107926242c0:200">
+                <span class="model-name">Codex</span>
+                <span class="model-subtitle">5.3</span>
             </div>
         </div>
         <div class="output-container" id="outputContainer"></div>
@@ -333,7 +333,10 @@
             messageDiv.classList.add('message', type);
             if (type === 'ai-message') {
                 const htmlContent = marked.parse(text);
-                const cleanHtml = DOMPurify.sanitize(htmlContent);
+                const cleanHtml = DOMPurify.sanitize(htmlContent, {
+                    ADD_TAGS: ['img'],
+                    ADD_ATTR: ['src', 'alt', 'title', 'width', 'height']
+                });
                 messageDiv.innerHTML = cleanHtml;
             } else {
                 messageDiv.textContent = text;
