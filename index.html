@@ -58,6 +58,16 @@
             background-color: #2d2d2d;
             color: #e0e0e0;
             border: 1px solid #3e3e3e;
+            width: fit-content;
+            max-width: 80%;
+        }
+        .ai-message h1, .ai-message h2, .ai-message h3, .ai-message h4, .ai-message h5, .ai-message h6 {
+            color: #007aff;
+            margin-top: 10px;
+            margin-bottom: 5px;
+        }
+        .ai-message p {
+            margin: 5px 0;
         }
         .ai-message pre {
             background-color: #2d2d2d;
@@ -74,13 +84,29 @@
             border-radius: 3px;
             font-family: 'Courier New', Courier, monospace;
         }
-        .ai-message h1, .ai-message h2, .ai-message h3, .ai-message h4 {
-            color: #007aff;
-            margin-top: 10px;
-            margin-bottom: 5px;
-        }
-        .ai-message p {
+        .ai-message ul, .ai-message ol {
+            padding-left: 20px;
             margin: 5px 0;
+        }
+        .ai-message blockquote {
+            border-left: 3px solid #007aff;
+            padding-left: 10px;
+            margin-left: 0;
+            color: #aaa;
+            font-style: italic;
+        }
+        .ai-message table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 10px 0;
+        }
+        .ai-message th, .ai-message td {
+            border: 1px solid #3e3e3e;
+            padding: 8px;
+            text-align: left;
+        }
+        .ai-message th {
+            background-color: #333;
         }
         .input-area {
             display: flex;
@@ -193,7 +219,6 @@
 <body>
     <div class="container">
         <div class="model-selector">
-            <!-- EASY TO CHANGE ICONS: Just update the src attribute below -->
             <div class="model-item" data-model="gpt-5-nano">
                 <img class="model-icon" src="https://raw.githubusercontent.com/lobehub/lobe-icons/refs/heads/master/packages/static-png/dark/openai.png" alt="ChatGPT">
                 <span class="model-name">ChatGPT</span>
@@ -230,9 +255,7 @@
                 <span class="model-subtitle">openAI</span>
             </div>
         </div>
-        <div class="output-container" id="outputContainer">
-            <!-- Output messages will appear here -->
-        </div>
+        <div class="output-container" id="outputContainer"></div>
         <div class="input-area">
             <div class="loading" id="loadingCircle"></div>
             <textarea id="inputField" placeholder="Type your message..." rows="1"></textarea>
@@ -244,34 +267,27 @@
         const loadingCircle = document.getElementById('loadingCircle');
         const outputContainer = document.getElementById('outputContainer');
         const sendButton = document.getElementById('sendButton');
-        // Keep track of conversation history
         let conversationHistory = [];
-        let selectedModel = 'gpt-5-nano'; // Default model
+        let selectedModel = 'gpt-5-nano';
         const modelItems = document.querySelectorAll('.model-item');
 
-        // Set up model selection
         modelItems.forEach(item => {
             item.addEventListener('click', () => {
                 modelItems.forEach(i => i.classList.remove('selected'));
                 item.classList.add('selected');
                 selectedModel = item.dataset.model;
-                // Clear conversation history and output when model changes
                 conversationHistory = [];
                 outputContainer.innerHTML = '';
             });
         });
-        // Preselect default
         document.querySelector(`.model-item[data-model="${selectedModel}"]`).classList.add('selected');
 
-        // Auto-resize textarea
         inputField.addEventListener('input', () => {
             inputField.style.height = 'auto';
             inputField.style.height = inputField.scrollHeight + 'px';
         });
 
-        // Send message on button click
         sendButton.addEventListener('click', sendMessage);
-        // Send message on Enter key
         inputField.addEventListener('keypress', (e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
@@ -286,25 +302,14 @@
                 inputField.value = '';
                 inputField.style.height = 'auto';
                 showLoading();
-                // Add user message to history
-                conversationHistory.push({
-                    role: "user",
-                    content: messageText
-                });
+                conversationHistory.push({ role: "user", content: messageText });
                 try {
-                    const response = await puter.ai.chat(conversationHistory, {
-                        model: selectedModel
-                    });
-                    // Extract content, handling possible array format for models like Claude
+                    const response = await puter.ai.chat(conversationHistory, { model: selectedModel });
                     let aiContent = response.message.content;
                     if (Array.isArray(aiContent)) {
                         aiContent = aiContent.map(block => block.text || '').join('\n');
                     }
-                    // Add AI's response to history
-                    conversationHistory.push({
-                        role: "assistant",
-                        content: aiContent
-                    });
+                    conversationHistory.push({ role: "assistant", content: aiContent });
                     hideLoading();
                     addMessage(aiContent, 'ai-message');
                 } catch (error) {
@@ -325,7 +330,6 @@
         function addMessage(text, type) {
             const messageDiv = document.createElement('div');
             messageDiv.classList.add('message', type);
-
             if (type === 'ai-message') {
                 const htmlContent = marked.parse(text);
                 const cleanHtml = DOMPurify.sanitize(htmlContent);
@@ -333,7 +337,6 @@
             } else {
                 messageDiv.textContent = text;
             }
-
             outputContainer.appendChild(messageDiv);
             outputContainer.scrollTop = outputContainer.scrollHeight;
         }
